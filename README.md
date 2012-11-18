@@ -12,7 +12,7 @@ Usage
 
 Include has\_response in your Gemfile, then include HasResponse and define to\_response in your model:
 
-    class User
+    class User < ActiveRecord::Base
       include HasResponse
 
       def to_response
@@ -37,7 +37,7 @@ There's nothing special here yet, but you can now return JSON of users more easi
 
 Say you want to include the user's Location in your response, too. Set up Location:
 
-    class Location
+    class Location < ActiveRecord::Base
       include HasResponse
 
       def to_response
@@ -51,7 +51,7 @@ Say you want to include the user's Location in your response, too. Set up Locati
 
 And the association:
 
-    def User
+    class User < ActiveRecord::Base
       #...
       belongs_to :location
       #...

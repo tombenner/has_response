@@ -26,17 +26,17 @@ module HasResponse
     key.to_sym
   end
 
-  def format_response_value(object, with=nil)
-    if object.nil?
+  def format_response_value(value, with=nil)
+    if value.nil?
       nil
-    elsif object.is_a?(TrueClass) || object.is_a?(FalseClass) || object.is_a?(String) || object.is_a?(String) || object.is_a?(Integer)
-      object
-    elsif object.is_a?(ActiveRecord::Relation) || object.is_a?(Array)
-      object.collect do |record|
+    elsif value.is_a?(TrueClass) || value.is_a?(FalseClass) || value.is_a?(String) || value.is_a?(Symbol) || value.is_a?(Integer)
+      value
+    elsif value.is_a?(ActiveRecord::Relation) || value.is_a?(Array)
+      value.collect do |record|
         with.nil? ? record.to_response : record.to_response_with(with)
       end
     else
-      with.nil? ? object.to_response : object.to_response_with(with)
+      with.nil? ? value.to_response : value.to_response_with(with)
     end
   end
 end

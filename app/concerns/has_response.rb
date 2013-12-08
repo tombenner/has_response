@@ -2,7 +2,7 @@ module HasResponse
   extend ActiveSupport::Concern
 
   def to_response_with(*attributes)
-    raise "Class `#{self.class.name}' does not have a `to_response' method defined" and return nil if !respond_to?(:to_response)
+    raise "Class `#{self.class.name}' does not have a `to_response' method defined" if !respond_to?(:to_response)
     response = self.to_response
     attributes.each do |attribute|
       if attribute.is_a?(Hash)
@@ -20,6 +20,8 @@ module HasResponse
     response
   end
 
+  protected
+
   def format_response_key(key)
     key = key.to_s
     key.sub!(/\?$/, '')
@@ -32,11 +34,15 @@ module HasResponse
     elsif value.is_a?(TrueClass) || value.is_a?(FalseClass) || value.is_a?(String) || value.is_a?(Symbol) || value.is_a?(Integer)
       value
     elsif value.is_a?(ActiveRecord::Relation) || value.is_a?(Array)
-      value.collect do |record|
-        with.nil? ? record.to_response : record.to_response_with(with)
-      end
+      format_response_collection(value, with)
     else
       with.nil? ? value.to_response : value.to_response_with(with)
+    end
+  end
+
+  def format_response_collection(collection, with=nil)
+    collection.collect do |record|
+      with.nil? ? record.to_response : record.to_response_with(with)
     end
   end
 end

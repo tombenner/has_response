@@ -29,14 +29,12 @@ module HasResponse
   end
 
   def format_response_value(value, with=nil)
-    if value.nil?
-      nil
-    elsif value.is_a?(TrueClass) || value.is_a?(FalseClass) || value.is_a?(String) || value.is_a?(Symbol) || value.is_a?(Integer)
-      value
+    if value.is_a?(ActiveRecord::Base)
+      with.nil? ? value.to_response : value.to_response_with(with)
     elsif value.is_a?(ActiveRecord::Relation) || value.is_a?(Array)
       format_response_collection(value, with)
     else
-      with.nil? ? value.to_response : value.to_response_with(with)
+      value
     end
   end
 
